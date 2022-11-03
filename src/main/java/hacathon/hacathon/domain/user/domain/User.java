@@ -31,4 +31,8 @@ public class User {
         this.name = name;
         this.password = password;
     }
+
+    public void encodedPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
 }
