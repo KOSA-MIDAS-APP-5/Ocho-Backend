@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -28,6 +29,10 @@ public class Attendance {
 
     private LocalTime startTime;
 
+    private LocalTime workTime;
+
+    private LocalTime remainingTime;
+
     @Builder
     public Attendance(LocalTime startTime) {
         this.startTime = startTime;
@@ -44,5 +49,10 @@ public class Attendance {
 
     public void addAttendanceLeaveWork() {
         this.attendanceStatus = AttendanceStatus.LEAVE_WORK;
+    }
+
+    public void updateTimes(LocalTime now) {
+        this.workTime = this.startTime.plus(now.getMinute(), ChronoUnit.MINUTES);
+        this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.MINUTES);
     }
 }

@@ -44,7 +44,10 @@ public class AttendanceService {
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
 
         return attendanceRepository.findByUser(user)
-                .map(AttendanceResponseDto::new)
+                .map(attendance -> {
+                    attendance.updateTimes(LocalTime.now());
+                    return AttendanceResponseDto.builder().attendance(attendance).build();
+                })
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_FOUND_ATTENDANCE));
     }
 
@@ -58,6 +61,7 @@ public class AttendanceService {
     public AttendanceResponseDto updateAttendanceStatus() {
         User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+
         return attendanceRepository.findByUser(user)
                 .map(attendance -> {
                     attendance.addAttendanceLeaveWork();

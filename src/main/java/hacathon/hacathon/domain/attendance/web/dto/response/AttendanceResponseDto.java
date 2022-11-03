@@ -4,9 +4,7 @@ import hacathon.hacathon.domain.attendance.domain.Attendance;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 public class AttendanceResponseDto {
@@ -19,7 +17,7 @@ public class AttendanceResponseDto {
     public AttendanceResponseDto(Attendance attendance) {
         this.status = attendance.getAttendanceStatus().getName();
         this.startTime = attendance.getStartTime();
-        this.workTime = attendance.getStartTime().plus(LocalTime.now().getMinute(), ChronoUnit.MINUTES);
-        this.timeRemaining = attendance.getTodayTotalWorkTime().minus(workTime.getMinute(), ChronoUnit.MINUTES);
+        this.workTime = attendance.getWorkTime();
+        this.timeRemaining = attendance.getRemainingTime();
     }
 }
