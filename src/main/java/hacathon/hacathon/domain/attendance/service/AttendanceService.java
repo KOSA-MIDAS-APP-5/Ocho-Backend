@@ -103,6 +103,4 @@ public class AttendanceService {
         LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
         attendance.updateTimes(restTime);
     }
-
-
 }

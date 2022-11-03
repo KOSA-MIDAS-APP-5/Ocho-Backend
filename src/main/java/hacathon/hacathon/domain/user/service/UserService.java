@@ -4,12 +4,11 @@ import hacathon.hacathon.domain.user.domain.User;
 import hacathon.hacathon.domain.user.domain.UserRepository;
 import hacathon.hacathon.domain.user.exception.UserException;
 import hacathon.hacathon.domain.user.exception.UserExceptionType;
-import hacathon.hacathon.domain.user.util.AdminUtil;
+import hacathon.hacathon.domain.user.validate.UserValidator;
 import hacathon.hacathon.domain.user.web.dto.request.UserJoinRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserLoginRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserUpdatePasswordRequestDto;
 import hacathon.hacathon.domain.user.web.dto.response.TokenResponseDto;
-import hacathon.hacathon.global.security.jwt.JwtProvider;
 import hacathon.hacathon.global.security.jwt.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
+    private final UserValidator userValidator;
 
     public void join(UserJoinRequestDto requestDto) {
         if(userRepository.findByName(requestDto.getName()).isPresent()) {
@@ -39,8 +38,8 @@ public class UserService {
     }
 
     public TokenResponseDto login(UserLoginRequestDto requestDto) {
-        if(isAdminUser(requestDto)) {
-            return loginAdmin(requestDto);
+        if(userValidator.isAdminUser(requestDto)) {
+            return userValidator.loginAdmin(requestDto);
         }
         User user = userRepository.findByName(requestDto.getName())
                 .orElseThrow(() -> new UserException(UserExceptionType.NOT_SIGNUP_NAME));
@@ -49,23 +48,7 @@ public class UserService {
             throw new UserException(UserExceptionType.WRONG_PASSWORD);
         }
 
-        return responseDto(false, requestDto.getName());
-    }
-
-    private TokenResponseDto loginAdmin(UserLoginRequestDto requestDto) {
-        return responseDto(true, requestDto.getName());
-    }
-
-    private boolean isAdminUser(UserLoginRequestDto requestDto) {
-        return requestDto.getName().equals(AdminUtil.ADMIN_NAME) && requestDto.getPassword().equals(AdminUtil.ADMIN_PASSWORD);
-    }
-
-    private TokenResponseDto responseDto(boolean isAdmin, String name) {
-        final String accessToken = jwtProvider.createAccessToken(name);
-        return TokenResponseDto.builder()
-                .isAdmin(isAdmin)
-                .accessToken(accessToken)
-                .build();
+        return userValidator.responseDto(false, requestDto.getName());
     }
 
     public void updatePassword(UserUpdatePasswordRequestDto requestDto) {
