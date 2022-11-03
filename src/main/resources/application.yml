@@ -21,17 +21,14 @@ spring:
       hibernate:
         format_sql: true
 
-cloud:
-  aws:
-    s3:
-      bucket: usedmarket-nswon
-    region:
-      static : ap-northeast-2
-    credentials:
-      access-key: AKIA56O7Z7HW6L3X6YOB
-      secret-key: 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
-    stack:
-      auto: false
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
 
 server:
   port: 8091

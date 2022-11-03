@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -21,19 +22,19 @@ public class Attendance {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private AttendanceStatus attendanceStatus;
+    private AttendanceStatus attendanceStatus = AttendanceStatus.EGRESSION;
 
-    private int todayWorkTime;
-    private int nowTime;
+    private final LocalTime todayTotalWorkTime = LocalTime.of(8, 0);
+
+    private LocalTime startTime;
 
     @Builder
-    public Attendance(int todayWorkTime, int nowTime) {
-        this.todayWorkTime = todayWorkTime;
-        this.nowTime = nowTime;
+    public Attendance(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     public void addAttendanceGoWork() {
-        this.attendanceStatus = AttendanceStatus.GO_WORK;
+        this.attendanceStatus = AttendanceStatus.DUTY;
     }
 
     public void confirmUser(User user) {
