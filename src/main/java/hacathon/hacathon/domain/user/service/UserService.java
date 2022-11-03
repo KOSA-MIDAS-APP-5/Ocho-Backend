@@ -38,9 +38,6 @@ public class UserService {
     }
 
     public TokenResponseDto login(UserLoginRequestDto requestDto) {
-        if(isAdminUser(requestDto)) {
-            return loginAdmin(requestDto);
-        }
         User user = userRepository.findByName(requestDto.getName())
                 .orElseThrow(() -> new UserException(UserExceptionType.NOT_SIGNUP_NAME));
 
@@ -48,30 +45,18 @@ public class UserService {
             throw new UserException(UserExceptionType.WRONG_PASSWORD);
         }
 
-        return responseDto(false, requestDto.getName());
-    }
-
-    private TokenResponseDto loginAdmin(UserLoginRequestDto requestDto) {
-        return responseDto(true, requestDto.getName());
-    }
-
-    private boolean isAdminUser(UserLoginRequestDto requestDto) {
-        return requestDto.getName().equals("admin") && requestDto.getPassword().equals("1234");
-    }
-
-    private TokenResponseDto responseDto(boolean isAdmin, String name) {
-        final String accessToken = jwtProvider.createAccessToken(name);
-        return TokenResponseDto.builder()
-                .isAdmin(isAdmin)
-                .accessToken(accessToken)
-                .build();
+        final String accessToken = jwtProvider.createAccessToken(requestDto.getName());
+            return TokenResponseDto.builder()
+                    .isAdmin(false)
+                    .accessToken(accessToken)
+                    .build();
     }
 
     public void updatePassword(UserUpdatePasswordRequestDto requestDto) {
         User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
 
-        if(user.matchPassword(passwordEncoder, requestDto.getBeforePassword())) {
+        if(!user.matchPassword(passwordEncoder, requestDto.getBeforePassword())) {
             throw new UserException(UserExceptionType.WRONG_PASSWORD);
         }
 

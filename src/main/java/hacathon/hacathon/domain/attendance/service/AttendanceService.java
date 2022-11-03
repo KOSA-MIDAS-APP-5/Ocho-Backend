@@ -63,7 +63,7 @@ public class AttendanceService {
     @Transactional(readOnly = true)
     public List<AttendanceAllResponseDto> getAttendanceNotGoWork() {
         return attendanceRepository.findAll().stream()
-                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.NOT_GO_WORK))
+                .filter(attendance -> !attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());
     }
