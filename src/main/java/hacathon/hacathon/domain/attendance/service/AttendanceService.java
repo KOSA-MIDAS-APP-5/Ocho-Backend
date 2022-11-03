@@ -13,11 +13,13 @@ import hacathon.hacathon.domain.user.exception.UserException;
 import hacathon.hacathon.domain.user.exception.UserExceptionType;
 import hacathon.hacathon.global.security.jwt.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,17 +33,16 @@ public class AttendanceService {
     private final UserRepository userRepository;
 
     public void createAttendance() {
+        User user = validateUser();
+
+        if(attendanceRepository.findByUser(user).isPresent()) {
+            throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
+        }
+
         Attendance attendance = Attendance.builder()
                 .startTime(LocalTime.now())
                 .today(LocalDate.now())
                 .build();
-
-        User user = (userRepository.findByName(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN)));
-
-        if(attendance.getUser().getName().equals(user.getName())) {
-            throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
-        }
 
         attendance.confirmUser(user);
 
@@ -51,8 +52,7 @@ public class AttendanceService {
 
     @Transactional(readOnly = true)
     public AttendanceResponseDto getUserAttendance() {
-        User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+        User user = validateUser();
 
         return attendanceRepository.findByUser(user)
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
@@ -60,7 +60,7 @@ public class AttendanceService {
                     attendance.updateTimes(LocalTime.now());
                     return AttendanceResponseDto.builder().attendance(attendance).build();
                 })
-                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_FOUND_ATTENDANCE));
+                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
     }
 
     @Transactional(readOnly = true)
@@ -82,8 +82,7 @@ public class AttendanceService {
     }
 
     public AttendanceResponseDto updateAttendanceStatus() {
-        User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+        User user = validateUser();
 
         return attendanceRepository.findByUser(user)
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
@@ -92,6 +91,31 @@ public class AttendanceService {
                     attendance.updateTimes(LocalTime.now());
                     return AttendanceResponseDto.builder().attendance(attendance).build();
                 })
-                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_FOUND_ATTENDANCE));
+                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
+    }
+
+    @Scheduled(cron = "0 0 12 * * *")
+    public void startRest() {
+        Attendance attendance = validateUserAndAttendance();
+        attendance.startRestTime(LocalTime.now());
+    }
+
+    @Scheduled(cron = "0 0 1 * * *")
+    public void endRest() {
+        Attendance attendance = validateUserAndAttendance();
+        LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
+        attendance.updateTimes(restTime);
+    }
+
+    private Attendance validateUserAndAttendance() {
+        User user = validateUser();
+
+        return attendanceRepository.findByUser(user)
+                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
+    }
+
+    private User validateUser() {
+        return userRepository.findByName(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
     }
 }

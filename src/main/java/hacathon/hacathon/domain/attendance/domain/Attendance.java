@@ -28,13 +28,15 @@ public class Attendance {
 
     private final LocalTime todayTotalWorkTime = LocalTime.of(8, 0);
 
-    private LocalTime startTime;
+    private LocalTime startTime = LocalTime.of(0, 0);
 
-    private LocalTime workTime;
+    private LocalTime workTime = LocalTime.of(0, 0);
 
-    private LocalTime remainingTime;
+    private LocalTime remainingTime = LocalTime.of(0, 0);
 
     private LocalDate today;
+
+    private LocalTime startRestTime = LocalTime.of(0, 0);
 
     @Builder
     public Attendance(LocalTime startTime, LocalDate today) {
@@ -58,5 +60,9 @@ public class Attendance {
     public void updateTimes(LocalTime now) {
         this.workTime = now.minus(this.startTime.getMinute(), ChronoUnit.MINUTES).withNano(0);
         this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.MINUTES);
+    }
+
+    public void startRestTime(LocalTime startRestTime) {
+        this.startRestTime = startRestTime;
     }
 }

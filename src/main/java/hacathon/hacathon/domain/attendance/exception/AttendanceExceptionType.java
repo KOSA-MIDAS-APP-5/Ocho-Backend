@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum AttendanceExceptionType implements BaseExceptionType {
 
-    NOT_FOUND_ATTENDANCE(605, HttpStatus.BAD_REQUEST, "근태 정보가 존재하지 않습니다."),
+    NOT_START_ATTENDANCE_YET(605, HttpStatus.BAD_REQUEST, "출석을 등록하지 않았습니다."),
     ALREADY_DUTY(701, HttpStatus.BAD_REQUEST, "이미 출근중입니다.");
 
     private final int errorCode;

@@ -33,7 +33,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Attendance> attendances = new ArrayList<>();
 
-    private LocalTime dutyTime;
+    private LocalTime dutyTime = LocalTime.of(0, 0);
 
     @Builder
     public User(String name, String password) {
