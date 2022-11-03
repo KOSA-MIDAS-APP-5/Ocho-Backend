@@ -5,13 +5,10 @@ import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
+import hacathon.hacathon.domain.attendance.validate.AttendanceValidator;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDto;
 import hacathon.hacathon.domain.user.domain.User;
-import hacathon.hacathon.domain.user.domain.UserRepository;
-import hacathon.hacathon.domain.user.exception.UserException;
-import hacathon.hacathon.domain.user.exception.UserExceptionType;
-import hacathon.hacathon.global.security.jwt.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,10 +27,10 @@ import java.util.stream.Collectors;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final UserRepository userRepository;
+    private final AttendanceValidator attendanceValidator;
 
     public void createAttendance() {
-        User user = validateUser();
+        User user = attendanceValidator.validateUser();
 
         if(attendanceRepository.findByUser(user).isPresent()) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
@@ -52,7 +49,7 @@ public class AttendanceService {
 
     @Transactional(readOnly = true)
     public AttendanceResponseDto getUserAttendance() {
-        User user = validateUser();
+        User user = attendanceValidator.validateUser();
 
         return attendanceRepository.findByUser(user)
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
@@ -82,7 +79,7 @@ public class AttendanceService {
     }
 
     public AttendanceResponseDto updateAttendanceStatus() {
-        User user = validateUser();
+        User user = attendanceValidator.validateUser();
 
         return attendanceRepository.findByUser(user)
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
@@ -96,26 +93,16 @@ public class AttendanceService {
 
     @Scheduled(cron = "0 0 12 * * *")
     public void startRest() {
-        Attendance attendance = validateUserAndAttendance();
+        Attendance attendance = attendanceValidator.validateUserAndAttendance();
         attendance.startRestTime(LocalTime.now());
     }
 
     @Scheduled(cron = "0 0 1 * * *")
     public void endRest() {
-        Attendance attendance = validateUserAndAttendance();
+        Attendance attendance = attendanceValidator.validateUserAndAttendance();
         LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
         attendance.updateTimes(restTime);
     }
 
-    private Attendance validateUserAndAttendance() {
-        User user = validateUser();
 
-        return attendanceRepository.findByUser(user)
-                .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
-    }
-
-    private User validateUser() {
-        return userRepository.findByName(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
-    }
 }
