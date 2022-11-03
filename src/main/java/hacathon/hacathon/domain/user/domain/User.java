@@ -47,4 +47,8 @@ public class User {
     public void addAttendance(Attendance attendance) {
         this.attendance = attendance;
     }
+
+    public void updateUser(String name) {
+        this.name = name;
+    }
 }
