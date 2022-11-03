@@ -52,7 +52,7 @@ public class Attendance {
     }
 
     public void updateTimes(LocalTime now) {
-        this.workTime = this.startTime.plus(now.getMinute(), ChronoUnit.MINUTES);
+        this.workTime = now.minus(this.startTime.getMinute(), ChronoUnit.MINUTES);
         this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.MINUTES);
     }
 }
