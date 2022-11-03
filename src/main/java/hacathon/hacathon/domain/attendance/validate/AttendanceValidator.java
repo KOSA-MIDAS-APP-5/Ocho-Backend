@@ -2,15 +2,11 @@ package hacathon.hacathon.domain.attendance.validate;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
 import hacathon.hacathon.domain.attendance.domain.AttendanceQuerydslRepository;
-import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
 import hacathon.hacathon.domain.user.domain.User;
-import hacathon.hacathon.domain.user.domain.UserRepository;
-import hacathon.hacathon.domain.user.exception.UserException;
-import hacathon.hacathon.domain.user.exception.UserExceptionType;
-import hacathon.hacathon.global.security.jwt.SecurityUtil;
+import hacathon.hacathon.domain.user.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendanceValidator {
     private final AttendanceQuerydslRepository attendanceQuerydslRepository;
-    private final UserRepository userRepository;
+    private final UserValidator userValidator;
 
-    public Attendance validateUserAndAttendance() {
+    public Attendance validateAttendanceByUser() {
         User user = validateUser();
 
         return attendanceQuerydslRepository.getAttendanceByUser(user)
@@ -28,8 +24,7 @@ public class AttendanceValidator {
     }
 
     public User validateUser() {
-        return userRepository.findByName(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+        return userValidator.validateUser();
     }
 
     public boolean isLeaveWorkUser(Attendance attendance) {

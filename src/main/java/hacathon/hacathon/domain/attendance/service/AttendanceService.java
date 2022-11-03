@@ -12,6 +12,7 @@ import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDt
 import hacathon.hacathon.domain.mapPoint.service.MapPointService;
 import hacathon.hacathon.domain.mapPoint.web.dto.request.MapPointCreateRequestDto;
 import hacathon.hacathon.domain.user.domain.User;
+import hacathon.hacathon.domain.user.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -102,7 +103,7 @@ public class AttendanceService {
 
     @Scheduled(cron = "0 0 12 * * *")
     public void startRest() {
-        Attendance attendance = attendanceValidator.validateUserAndAttendance();
+        Attendance attendance = attendanceValidator.validateAttendanceByUser();
 
         if(!attendanceValidator.isLeaveWorkUser(attendance)) {
             attendance.addAttendanceRest();
@@ -112,7 +113,7 @@ public class AttendanceService {
 
     @Scheduled(cron = "0 0 1 * * *")
     public void endRest() {
-        Attendance attendance = attendanceValidator.validateUserAndAttendance();
+        Attendance attendance = attendanceValidator.validateAttendanceByUser();
         LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
         attendance.updateTimes(restTime);
 

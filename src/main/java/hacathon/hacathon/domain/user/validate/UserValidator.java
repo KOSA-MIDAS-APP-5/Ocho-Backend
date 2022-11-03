@@ -1,9 +1,14 @@
 package hacathon.hacathon.domain.user.validate;
 
+import hacathon.hacathon.domain.user.domain.User;
+import hacathon.hacathon.domain.user.domain.UserRepository;
+import hacathon.hacathon.domain.user.exception.UserException;
+import hacathon.hacathon.domain.user.exception.UserExceptionType;
 import hacathon.hacathon.domain.user.util.AdminUtil;
 import hacathon.hacathon.domain.user.web.dto.request.UserLoginRequestDto;
 import hacathon.hacathon.domain.user.web.dto.response.TokenResponseDto;
 import hacathon.hacathon.global.security.jwt.JwtProvider;
+import hacathon.hacathon.global.security.jwt.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
 
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
     public TokenResponseDto loginAdmin(UserLoginRequestDto requestDto) {
         return responseDto(true, requestDto.getName());
@@ -27,5 +33,10 @@ public class UserValidator {
                 .isAdmin(isAdmin)
                 .accessToken(accessToken)
                 .build();
+    }
+
+    public User validateUser() {
+        return userRepository.findByName(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
     }
 }

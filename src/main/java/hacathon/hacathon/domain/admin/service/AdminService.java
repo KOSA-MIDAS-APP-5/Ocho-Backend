@@ -9,10 +9,7 @@ import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
-import hacathon.hacathon.domain.mapPoint.domain.MapPoint;
 import hacathon.hacathon.domain.mapPoint.domain.MapPointRepository;
-import hacathon.hacathon.domain.mapPoint.exception.MapPointException;
-import hacathon.hacathon.domain.mapPoint.exception.MapPointExceptionType;
 import hacathon.hacathon.domain.mapPoint.web.dto.response.MapPointResponseDto;
 import hacathon.hacathon.domain.user.domain.Authority;
 import hacathon.hacathon.domain.user.domain.User;
@@ -85,7 +82,8 @@ public class AdminService {
 
         validateAdmin(user);
 
-        if(user.getDutyTime() == null) {
+        //TODO : 포인트
+        if(user.getDutyTime().equals(LocalTime.of(0, 0))) {
             throw new UserException(UserExceptionType.NOT_SETTING_DUTY_TIME);
         }
 
