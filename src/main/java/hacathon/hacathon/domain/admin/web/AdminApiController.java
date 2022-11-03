@@ -4,6 +4,7 @@ import hacathon.hacathon.domain.admin.service.AdminService;
 import hacathon.hacathon.domain.admin.web.dto.request.AdminSettingDutyTimeRequestDto;
 import hacathon.hacathon.domain.admin.web.dto.request.AdminUpdateUserRequestDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
+import hacathon.hacathon.domain.mapPoint.web.dto.response.MapPointResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,10 @@ public class AdminApiController {
     @GetMapping("/late-user")
     public List<AttendanceAllResponseDto> getLateUsers() {
         return adminService.getLateUsers();
+    }
+
+    @GetMapping("/map-point")
+    public List<MapPointResponseDto> getMapPointAll() {
+        return adminService.getMapPointAll();
     }
 }

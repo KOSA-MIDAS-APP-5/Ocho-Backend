@@ -9,6 +9,8 @@ import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
 import hacathon.hacathon.domain.attendance.validate.AttendanceValidator;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDto;
+import hacathon.hacathon.domain.mapPoint.service.MapPointService;
+import hacathon.hacathon.domain.mapPoint.web.dto.request.MapPointCreateRequestDto;
 import hacathon.hacathon.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,13 +32,16 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final AttendanceValidator attendanceValidator;
     private final AttendanceQuerydslRepository attendanceQuerydslRepository;
+    private final MapPointService mapPointService;
 
-    public void createAttendance() {
+    public void createAttendance(MapPointCreateRequestDto requestDto) {
         User user = attendanceValidator.validateUser();
 
         if(attendanceQuerydslRepository.getAttendanceByUser(user).isPresent()) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
         }
+
+        mapPointService.createMapPoint(requestDto, user);
 
         Attendance attendance = Attendance.builder()
                 .startTime(LocalTime.now())

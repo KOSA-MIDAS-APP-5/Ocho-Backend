@@ -4,6 +4,9 @@ import hacathon.hacathon.domain.admin.web.dto.request.AdminSettingDutyTimeReques
 import hacathon.hacathon.domain.admin.web.dto.request.AdminUpdateUserRequestDto;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
+import hacathon.hacathon.domain.mapPoint.domain.MapPoint;
+import hacathon.hacathon.domain.mapPoint.domain.MapPointRepository;
+import hacathon.hacathon.domain.mapPoint.web.dto.response.MapPointResponseDto;
 import hacathon.hacathon.domain.user.domain.Authority;
 import hacathon.hacathon.domain.user.domain.User;
 import hacathon.hacathon.domain.user.domain.UserRepository;
@@ -28,6 +31,7 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final AttendanceRepository attendanceRepository;
+    private final MapPointRepository mapPointRepository;
 
     public void updateUserName(Long id, AdminUpdateUserRequestDto requestDto) {
         User user = userRepository.findById(id)
@@ -69,6 +73,12 @@ public class AdminService {
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> user.getDutyTime().isBefore(attendance.getStartTime()))
                 .map(AttendanceAllResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<MapPointResponseDto> getMapPointAll() {
+        return mapPointRepository.findAll().stream()
+                .map(MapPointResponseDto::new)
                 .collect(Collectors.toList());
     }
 

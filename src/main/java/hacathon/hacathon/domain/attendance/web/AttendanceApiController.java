@@ -3,6 +3,7 @@ package hacathon.hacathon.domain.attendance.web;
 import hacathon.hacathon.domain.attendance.service.AttendanceService;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDto;
+import hacathon.hacathon.domain.mapPoint.web.dto.request.MapPointCreateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,8 @@ public class AttendanceApiController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/new")
-    public void createAttendance() {
-        attendanceService.createAttendance();
+    public void createAttendance(@RequestBody MapPointCreateRequestDto requestDto) {
+        attendanceService.createAttendance(requestDto);
     }
 
     @GetMapping("")
