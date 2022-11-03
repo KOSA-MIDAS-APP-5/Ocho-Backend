@@ -3,13 +3,11 @@ package hacathon.hacathon.domain.user.web;
 import hacathon.hacathon.domain.user.service.UserService;
 import hacathon.hacathon.domain.user.web.dto.request.UserJoinRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserLoginRequestDto;
+import hacathon.hacathon.domain.user.web.dto.request.UserUpdatePasswordRequestDto;
 import hacathon.hacathon.domain.user.web.dto.response.TokenResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,5 +27,10 @@ public class UserApiController {
     @PostMapping("/login")
     public TokenResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
         return userService.login(requestDto);
+    }
+
+    @PutMapping("/edit/password")
+    public void updatePassword(@RequestBody UserUpdatePasswordRequestDto requestDto) {
+        userService.updatePassword(requestDto);
     }
 }

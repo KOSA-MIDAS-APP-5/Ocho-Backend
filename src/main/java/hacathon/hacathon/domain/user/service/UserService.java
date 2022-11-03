@@ -6,8 +6,10 @@ import hacathon.hacathon.domain.user.exception.UserException;
 import hacathon.hacathon.domain.user.exception.UserExceptionType;
 import hacathon.hacathon.domain.user.web.dto.request.UserJoinRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserLoginRequestDto;
+import hacathon.hacathon.domain.user.web.dto.request.UserUpdatePasswordRequestDto;
 import hacathon.hacathon.domain.user.web.dto.response.TokenResponseDto;
 import hacathon.hacathon.global.security.jwt.JwtProvider;
+import hacathon.hacathon.global.security.jwt.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,5 +65,16 @@ public class UserService {
                 .isAdmin(isAdmin)
                 .accessToken(accessToken)
                 .build();
+    }
+
+    public void updatePassword(UserUpdatePasswordRequestDto requestDto) {
+        User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+
+        if(user.matchPassword(passwordEncoder, requestDto.getBeforePassword())) {
+            throw new UserException(UserExceptionType.WRONG_PASSWORD);
+        }
+
+        user.updatePassword(passwordEncoder, requestDto.getAfterPassword());
     }
 }
