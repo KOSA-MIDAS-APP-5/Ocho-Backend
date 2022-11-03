@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,8 +30,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
-    @OneToOne(mappedBy = "user")
-    private Attendance attendance;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Attendance> attendances = new ArrayList<>();
+
+    private LocalTime essentialGoWorkTime;
 
     @Builder
     public User(String name, String password) {
@@ -45,7 +50,7 @@ public class User {
     }
 
     public void addAttendance(Attendance attendance) {
-        this.attendance = attendance;
+        this.attendances.add(attendance);
     }
 
     public void updateUser(String name) {
@@ -58,5 +63,9 @@ public class User {
 
     public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword) {
         return passwordEncoder.matches(checkPassword, this.password);
+    }
+
+    public void updateEssentialGoWorkTime(LocalTime essentialGoWorkTime) {
+        this.essentialGoWorkTime = essentialGoWorkTime;
     }
 }

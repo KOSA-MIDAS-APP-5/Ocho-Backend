@@ -4,6 +4,7 @@ import hacathon.hacathon.domain.user.domain.User;
 import hacathon.hacathon.domain.user.domain.UserRepository;
 import hacathon.hacathon.domain.user.exception.UserException;
 import hacathon.hacathon.domain.user.exception.UserExceptionType;
+import hacathon.hacathon.domain.user.util.AdminUtil;
 import hacathon.hacathon.domain.user.web.dto.request.UserJoinRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserLoginRequestDto;
 import hacathon.hacathon.domain.user.web.dto.request.UserUpdatePasswordRequestDto;
@@ -56,7 +57,7 @@ public class UserService {
     }
 
     private boolean isAdminUser(UserLoginRequestDto requestDto) {
-        return requestDto.getName().equals("admin") && requestDto.getPassword().equals("1234");
+        return requestDto.getName().equals(AdminUtil.ADMIN_NAME) && requestDto.getPassword().equals(AdminUtil.ADMIN_PASSWORD);
     }
 
     private TokenResponseDto responseDto(boolean isAdmin, String name) {

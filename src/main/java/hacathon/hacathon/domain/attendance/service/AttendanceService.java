@@ -75,6 +75,7 @@ public class AttendanceService {
         return attendanceRepository.findByUser(user)
                 .map(attendance -> {
                     attendance.addAttendanceLeaveWork();
+                    attendance.updateTimes(LocalTime.now());
                     return AttendanceResponseDto.builder().attendance(attendance).build();
                 })
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_FOUND_ATTENDANCE));
