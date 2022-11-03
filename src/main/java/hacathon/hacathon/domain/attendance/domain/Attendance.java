@@ -41,4 +41,8 @@ public class Attendance {
         this.user = user;
         user.addAttendance(this);
     }
+
+    public void addAttendanceLeaveWork() {
+        this.attendanceStatus = AttendanceStatus.LEAVE_WORK;
+    }
 }

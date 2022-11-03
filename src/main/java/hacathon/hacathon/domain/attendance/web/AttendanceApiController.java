@@ -30,4 +30,9 @@ public class AttendanceApiController {
     public List<AttendanceAllResponseDto> getAttendanceAll() {
         return attendanceService.getAttendanceAll();
     }
+
+    @PutMapping("/edit")
+    public AttendanceResponseDto updateAttendanceStatus() {
+        return attendanceService.updateAttendanceStatus();
+    }
 }
