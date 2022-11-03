@@ -1,6 +1,8 @@
 package hacathon.hacathon.global.security.user;
 
 import hacathon.hacathon.domain.user.domain.UserRepository;
+import hacathon.hacathon.domain.user.exception.UserException;
+import hacathon.hacathon.domain.user.exception.UserExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByName(username)
                 .map(CustomUserDetails::new)
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_USER));
     }
 }

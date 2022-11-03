@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JwtProvider {
 
     private static final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 24 * 30 * 1000L;
@@ -62,7 +64,6 @@ public class JwtProvider {
                     .setSigningKey(getSigningKey(SECRET_KEY))
                     .build()
                     .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+                    .getBody().get("name", String.class);
     }
 }

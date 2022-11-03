@@ -12,7 +12,7 @@ public enum UserExceptionType implements BaseExceptionType {
     ALREADY_EXIST_NAME(600, HttpStatus.OK, "이미 존재하는 이름입니다."),
     NOT_SIGNUP_NAME(601, HttpStatus.OK, "가입되지 않은 이름입니다."),
     WRONG_PASSWORD(602, HttpStatus.OK, "비밀번호가 일치하지 않습니다."),
-    NOT_FOUND_MEMBER(603, HttpStatus.OK, "존재하지 않는 회원입니다."),
+    NOT_FOUND_USER(603, HttpStatus.OK, "존재하지 않는 회원입니다."),
     REQUIRED_DO_LOGIN(604, HttpStatus.OK, "로그인이 필요합니다.");
 
     private final int errorCode;
