@@ -38,6 +38,7 @@ public class AdminService {
     private final MapPointRepository mapPointRepository;
     private final AttendanceQuerydslRepository attendanceQuerydslRepository;
 
+    @Transactional(readOnly = true)
     public AdminUserDetailResponseDto getUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_USER));
@@ -76,6 +77,7 @@ public class AdminService {
         user.settingDutyTime(localTime);
     }
 
+    @Transactional(readOnly = true)
     public List<AttendanceAllResponseDto> getLateUsers() {
         User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
@@ -94,6 +96,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<MapPointResponseDto> getMapPointAll() {
         return mapPointRepository.findAll().stream()
                 .map(MapPointResponseDto::new)

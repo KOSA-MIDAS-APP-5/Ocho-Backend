@@ -10,7 +10,7 @@ import java.time.LocalTime;
 public class AttendanceResponseDto {
     private final LocalTime startTime; //출근한 시간
     private final LocalTime workTime; //몇분동안 일했는지
-    private final LocalTime timeRemaining; //남은 시간
+    private final LocalTime remainingTime; //남은 시간
     private final String status; //근태 상태
 
     @Builder
@@ -18,6 +18,6 @@ public class AttendanceResponseDto {
         this.status = attendance.getAttendanceStatus().getName();
         this.startTime = attendance.getStartTime();
         this.workTime = attendance.getWorkTime();
-        this.timeRemaining = attendance.getRemainingTime();
+        this.remainingTime = attendance.getRemainingTime();
     }
 }
