@@ -1,9 +1,12 @@
 package hacathon.hacathon.domain.attendance.web;
 
 import hacathon.hacathon.domain.attendance.service.AttendanceService;
+import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,8 +21,13 @@ public class AttendanceApiController {
         attendanceService.createAttendance();
     }
 
-    @GetMapping("/test")
+    @GetMapping("")
     public AttendanceResponseDto getAttendance() {
         return attendanceService.getAttendance();
+    }
+
+    @GetMapping("/all")
+    public List<AttendanceAllResponseDto> getAttendanceAll() {
+        return attendanceService.getAttendanceAll();
     }
 }

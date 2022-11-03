@@ -4,6 +4,7 @@ import hacathon.hacathon.domain.attendance.domain.Attendance;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
+import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceResponseDto;
 import hacathon.hacathon.domain.user.domain.User;
 import hacathon.hacathon.domain.user.domain.UserRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,5 +46,12 @@ public class AttendanceService {
         return attendanceRepository.findByUser(user)
                 .map(AttendanceResponseDto::new)
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_FOUND_ATTENDANCE));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AttendanceAllResponseDto> getAttendanceAll() {
+        return attendanceRepository.findAll().stream()
+                .map(AttendanceAllResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
