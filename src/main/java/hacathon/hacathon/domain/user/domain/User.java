@@ -1,6 +1,7 @@
 package hacathon.hacathon.domain.user.domain;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
+import hacathon.hacathon.domain.mapPoint.domain.MapPoint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Attendance> attendances = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user")
+    private MapPoint point;
 
     private LocalTime dutyTime = LocalTime.of(0, 0);
 
@@ -67,5 +71,9 @@ public class User {
 
     public void settingDutyTime(LocalTime settingDutyTime) {
         this.dutyTime = settingDutyTime;
+    }
+
+    public void addMapPoint(MapPoint point) {
+        this.point = point;
     }
 }
