@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(String token) throws ExpiredJwtException {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(jwtProvider.getEmail(token));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(jwtProvider.getName(token));
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

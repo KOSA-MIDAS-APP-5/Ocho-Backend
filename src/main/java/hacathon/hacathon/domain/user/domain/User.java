@@ -32,6 +32,10 @@ public class User {
         this.password = password;
     }
 
+    public void addAuthorityUser() {
+        this.authority = Authority.ROLE_USER;
+    }
+
     public void encodedPassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
     }

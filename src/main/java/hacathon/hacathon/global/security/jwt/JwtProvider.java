@@ -1,7 +1,6 @@
 package hacathon.hacathon.global.security.jwt;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -36,9 +35,9 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createJwt(String email, Long time) {
+    public String createJwt(String name, Long time) {
         Claims claims = Jwts.claims();
-        claims.put("email", email);
+        claims.put("name", name);
 
         Date now = new Date();
 
@@ -50,15 +49,15 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createAccessToken(String email) {
-        return createJwt(email, ACCESS_TOKEN_VALID_TIME);
+    public String createAccessToken(String name) {
+        return createJwt(name, ACCESS_TOKEN_VALID_TIME);
     }
 
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader(JWT_HEADER);
     }
 
-    public String getEmail(String token) {
+    public String getName(String token) {
             return Jwts.parserBuilder()
                     .setSigningKey(getSigningKey(SECRET_KEY))
                     .build()
