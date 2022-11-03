@@ -18,7 +18,7 @@ public class UserJoinRequestDto {
 
     @NotNull(message = "비밀번호를 입력해주세요.")
     @Pattern(regexp = "(?=.*\\W)(?=\\S+$).{5,20}",
-            message = "영문 대,소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함된 5자 ~ 20자여야 합니다.")
+            message = "알파벳과 특수기호가 적어도 1개씩 사용해주세요")
     private String password;
 
     public User toEntity() {

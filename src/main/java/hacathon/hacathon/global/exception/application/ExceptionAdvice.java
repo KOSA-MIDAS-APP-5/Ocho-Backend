@@ -1,6 +1,5 @@
 package hacathon.hacathon.global.exception.application;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +51,7 @@ public class ExceptionAdvice {
             builder.append(fieldError.getField());
             builder.append("](은)는 ");
             builder.append(fieldError.getDefaultMessage());
+            break;
         }
 
         return new ResponseEntity(ExceptionDto.builder()
