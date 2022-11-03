@@ -9,12 +9,12 @@ public class MapPointResponseDto {
 
     private final String name;
     private final double latitude;
-    private final double hardness;
+    private final double longitude;
 
     @Builder
     public MapPointResponseDto(MapPoint mapPoint) {
         this.name = mapPoint.getUser().getName();
         this.latitude = mapPoint.getLatitude();
-        this.hardness = mapPoint.getHardness();
+        this.longitude = mapPoint.getLongitude();
     }
 }

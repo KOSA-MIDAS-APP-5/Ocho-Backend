@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class MapPointCreateRequestDto {
-    private double latitude;
-    private double hardness;
+    private String latitude;
+    private String longitude;
 
     public MapPoint toEntity() {
         return MapPoint.builder()
                 .latitude(latitude)
-                .hardness(hardness)
+                .longitude(longitude)
                 .build();
     }
 }

@@ -18,16 +18,16 @@ public class MapPoint {
 
     private double latitude;
 
-    private double hardness;
+    private double longitude;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public MapPoint(double latitude, double hardness) {
-        this.latitude = latitude;
-        this.hardness = hardness;
+    public MapPoint(String latitude, String longitude) {
+        this.latitude = Double.parseDouble(latitude);
+        this.longitude = Double.parseDouble(longitude);
     }
 
     public void confirmUser(User user) {
