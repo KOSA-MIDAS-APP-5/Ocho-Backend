@@ -31,21 +31,6 @@ public class AdminApiController {
         adminService.updateUserName(id, requestDto);
     }
 
-    @GetMapping("/overtime-users")
-    public List<AttendanceAllResponseDto> getOvertimeUsers() {
-        return adminService.getOvertimeUsers();
-    }
-
-    @PutMapping("/setting/duty-time")
-    public void settingDutyTime(@RequestBody AdminSettingDutyTimeRequestDto requestDto) {
-        adminService.settingDutyTime(requestDto);
-    }
-
-    @GetMapping("/late-user")
-    public List<AttendanceAllResponseDto> getLateUsers() {
-        return adminService.getLateUsers();
-    }
-
     @GetMapping("/map-point")
     public List<MapPointResponseDto> getMapPointAll() {
         return adminService.getMapPointAll();
