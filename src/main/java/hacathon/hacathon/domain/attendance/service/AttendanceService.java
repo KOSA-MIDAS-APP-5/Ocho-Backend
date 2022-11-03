@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +33,9 @@ public class AttendanceService {
     public void createAttendance() {
         User user = attendanceValidator.validateUser();
 
-        if(attendanceRepository.findByUser(user).isPresent()) {
+        Optional<Attendance> findAttendance = attendanceRepository.findByUser(user);
+
+        if(findAttendance.isPresent() && findAttendance.get().getToday().equals(LocalDate.now())) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
         }
 
@@ -94,6 +97,10 @@ public class AttendanceService {
     @Scheduled(cron = "0 0 12 * * *")
     public void startRest() {
         Attendance attendance = attendanceValidator.validateUserAndAttendance();
+
+        if(!attendanceValidator.isLeaveWorkUser(attendance)) {
+            attendance.addAttendanceRest();
+        }
         attendance.startRestTime(LocalTime.now());
     }
 
@@ -102,5 +109,9 @@ public class AttendanceService {
         Attendance attendance = attendanceValidator.validateUserAndAttendance();
         LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
         attendance.updateTimes(restTime);
+
+        if(!attendanceValidator.isLeaveWorkUser(attendance)) {
+            attendance.addAttendanceDuty();
+        }
     }
 }

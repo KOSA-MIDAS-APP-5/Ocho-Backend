@@ -2,6 +2,7 @@ package hacathon.hacathon.domain.attendance.validate;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
+import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
 import hacathon.hacathon.domain.user.domain.User;
@@ -29,5 +30,9 @@ public class AttendanceValidator {
     public User validateUser() {
         return userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
+    }
+
+    public boolean isLeaveWorkUser(Attendance attendance) {
+        return attendance.getAttendanceStatus().equals(AttendanceStatus.LEAVE_WORK);
     }
 }

@@ -57,6 +57,10 @@ public class Attendance {
         this.attendanceStatus = AttendanceStatus.LEAVE_WORK;
     }
 
+    public void addAttendanceRest() {
+        this.attendanceStatus = AttendanceStatus.REST;
+    }
+
     public void updateTimes(LocalTime now) {
         this.workTime = now.minus(this.startTime.getMinute(), ChronoUnit.MINUTES).withNano(0);
         this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.MINUTES);
