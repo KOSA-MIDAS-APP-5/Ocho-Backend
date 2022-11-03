@@ -2,6 +2,7 @@ package hacathon.hacathon.domain.attendance.service;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
+import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
 import hacathon.hacathon.domain.attendance.exception.AttendanceExceptionType;
 import hacathon.hacathon.domain.attendance.web.dto.response.AttendanceAllResponseDto;
@@ -52,8 +53,17 @@ public class AttendanceService {
     }
 
     @Transactional(readOnly = true)
-    public List<AttendanceAllResponseDto> getAttendanceAll() {
+    public List<AttendanceAllResponseDto> getAttendanceGoWork() {
         return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))
+                .map(AttendanceAllResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AttendanceAllResponseDto> getAttendanceNotGoWork() {
+        return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.NOT_GO_WORK))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());
     }
