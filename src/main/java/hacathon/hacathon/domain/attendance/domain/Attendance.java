@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -62,8 +63,8 @@ public class Attendance {
     }
 
     public void updateTimes(LocalTime now) {
-        this.workTime = now.minus(this.startTime.getMinute(), ChronoUnit.MINUTES).withNano(0);
-        this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.MINUTES);
+        this.workTime = now.minus(this.startTime.getMinute(), ChronoUnit.SECONDS).withNano(0);
+        this.remainingTime = this.todayTotalWorkTime.minus(this.workTime.getMinute(), ChronoUnit.SECONDS);
     }
 
     public void startRestTime(LocalTime startRestTime) {

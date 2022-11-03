@@ -114,7 +114,7 @@ public class AttendanceService {
     @Scheduled(cron = "0 0 1 * * *")
     public void endRest() {
         Attendance attendance = attendanceValidator.validateAttendanceByUser();
-        LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.MINUTES);
+        LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.SECONDS);
         attendance.updateTimes(restTime);
 
         if(!attendanceValidator.isLeaveWorkUser(attendance)) {
