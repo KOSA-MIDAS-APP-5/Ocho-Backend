@@ -27,13 +27,13 @@ public class AttendanceApiController {
     }
 
     @GetMapping("/go-work")
-    public List<AttendanceAllResponseDto> getAttendanceGoWork() {
-        return attendanceService.getAttendanceGoWork();
+    public List<AttendanceAllResponseDto> getAttendanceDuty() {
+        return attendanceService.getAttendanceDuty();
     }
 
     @GetMapping("/not/go-work")
-    public List<AttendanceAllResponseDto> getAttendanceNotGoWork() {
-        return attendanceService.getAttendanceNotGoWork();
+    public List<AttendanceAllResponseDto> getAttendanceNotDuty() {
+        return attendanceService.getAttendanceNotDuty();
     }
 
     @PutMapping("/edit")

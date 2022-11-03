@@ -23,7 +23,7 @@ public class Attendance {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private AttendanceStatus attendanceStatus = AttendanceStatus.NOT_GO_WORK;
+    private AttendanceStatus attendanceStatus = AttendanceStatus.LEAVE_WORK;
 
     private final LocalTime todayTotalWorkTime = LocalTime.of(8, 0);
 
