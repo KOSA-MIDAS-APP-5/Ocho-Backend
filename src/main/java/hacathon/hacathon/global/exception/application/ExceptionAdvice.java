@@ -22,7 +22,10 @@ public class ExceptionAdvice {
         log.error("BaseException errorMessage(): {}", exception.getExceptionType().getErrorMessage());
         log.error("BaseException errorCode(): {}", exception.getExceptionType().getErrorCode());
 
-        return new ResponseEntity(new ExceptionDto(exception.getExceptionType().getErrorCode(), exception.getExceptionType().getErrorMessage()), exception.getExceptionType().getHttpStatus());
+        return new ResponseEntity(ExceptionDto.builder()
+                .errorCode(exception.getExceptionType().getErrorCode())
+                .errorMessage(exception.getExceptionType().getErrorMessage())
+                .build(), exception.getExceptionType().getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
@@ -40,7 +43,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String processValidationError(MethodArgumentNotValidException e) {
+    public ResponseEntity processValidationError(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
 
         StringBuilder builder = new StringBuilder();
@@ -49,19 +52,24 @@ public class ExceptionAdvice {
             builder.append(fieldError.getField());
             builder.append("](은)는 ");
             builder.append(fieldError.getDefaultMessage());
-            builder.append("\n 입력된 값: [");
-            builder.append(fieldError.getRejectedValue());
-            builder.append("] \n");
         }
 
-        return builder.toString();
+        return new ResponseEntity(ExceptionDto.builder()
+                .errorCode(700)
+                .errorMessage(builder.toString())
+                .build(), HttpStatus.BAD_REQUEST);
+
     }
 
     @Data
-    @AllArgsConstructor
-    @Builder
     static class ExceptionDto {
         private Integer errorCode;
         private String errorMessage;
+
+        @Builder
+        public ExceptionDto(Integer errorCode, String errorMessage) {
+            this.errorCode = errorCode;
+            this.errorMessage = errorMessage;
+        }
     }
 }
