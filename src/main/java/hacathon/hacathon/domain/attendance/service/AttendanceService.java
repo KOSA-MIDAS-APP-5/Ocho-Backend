@@ -36,7 +36,6 @@ public class AttendanceService {
 
         if(attendanceQuerydslRepository.getAttendanceByUser(user).isPresent()) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
-
         }
 
         Attendance attendance = Attendance.builder()
@@ -54,12 +53,16 @@ public class AttendanceService {
     public AttendanceResponseDto getUserAttendance() {
         User user = attendanceValidator.validateUser();
 
-        return attendanceQuerydslRepository.getAttendanceByUser(user)
-                .map(attendance -> {
-                    attendance.updateTimes(LocalTime.now());
-                    return AttendanceResponseDto.builder().attendance(attendance).build();
-                })
+        Attendance attendance = attendanceQuerydslRepository.getAttendanceByUser(user)
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
+
+        if(attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY)) {
+            attendance.updateTimes(LocalTime.now());
+        }
+
+        return AttendanceResponseDto.builder()
+                .attendance(attendance)
+                .build();
     }
 
     @Transactional(readOnly = true)

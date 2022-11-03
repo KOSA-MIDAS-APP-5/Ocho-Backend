@@ -39,9 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .antMatchers("/user/join")
-                .antMatchers("/attendance/go-work")
-                .antMatchers("/attendance/not/go-work")
-                .antMatchers("/admin/join");
+                .antMatchers("/attendance/duty")
+                .antMatchers("/attendance/not/duty");
     }
 
     @Bean
