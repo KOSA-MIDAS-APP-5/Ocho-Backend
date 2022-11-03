@@ -63,7 +63,7 @@ public class AttendanceService {
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
 
         if(attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY)) {
-            attendance.updateTimes(LocalTime.now());
+            attendance.updateTimes(LocalTime.now().withNano(0));
         }
 
         return AttendanceResponseDto.builder()
@@ -95,7 +95,7 @@ public class AttendanceService {
         return attendanceQuerydslRepository.getAttendanceByUser(user)
                 .map(attendance -> {
                     attendance.addAttendanceLeaveWork();
-                    attendance.updateTimes(LocalTime.now());
+                    attendance.updateTimes(LocalTime.now().withNano(0));
                     return AttendanceResponseDto.builder().attendance(attendance).build();
                 })
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
@@ -115,7 +115,7 @@ public class AttendanceService {
     public void endRest() {
         Attendance attendance = attendanceValidator.validateAttendanceByUser();
         LocalTime restTime = LocalTime.now().minus(attendance.getStartRestTime().getMinute(), ChronoUnit.SECONDS);
-        attendance.updateTimes(restTime);
+        attendance.updateTimes(restTime.withNano(0));
 
         if(!attendanceValidator.isLeaveWorkUser(attendance)) {
             attendance.addAttendanceDuty();
