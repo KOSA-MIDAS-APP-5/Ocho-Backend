@@ -22,18 +22,18 @@ public class AttendanceApiController {
     }
 
     @GetMapping("")
-    public AttendanceResponseDto getAttendance() {
-        return attendanceService.getAttendance();
+    public AttendanceResponseDto getUserAttendance() {
+        return attendanceService.getUserAttendance();
     }
 
     @GetMapping("/go-work")
-    public List<AttendanceAllResponseDto> getAttendanceDuty() {
-        return attendanceService.getAttendanceDuty();
+    public List<AttendanceAllResponseDto> getDutyUserAttendances() {
+        return attendanceService.getDutyUserAttendances();
     }
 
     @GetMapping("/not/go-work")
-    public List<AttendanceAllResponseDto> getAttendanceNotDuty() {
-        return attendanceService.getAttendanceNotDuty();
+    public List<AttendanceAllResponseDto> getNotDutyUserAttendances() {
+        return attendanceService.getNotDutyUserAttendances();
     }
 
     @PutMapping("/edit")

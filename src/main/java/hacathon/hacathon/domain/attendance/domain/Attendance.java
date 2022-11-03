@@ -42,7 +42,7 @@ public class Attendance {
         this.today = today;
     }
 
-    public void addAttendanceGoWork() {
+    public void addAttendanceDuty() {
         this.attendanceStatus = AttendanceStatus.DUTY;
     }
 

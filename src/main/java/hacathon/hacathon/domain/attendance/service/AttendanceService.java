@@ -36,15 +36,21 @@ public class AttendanceService {
                 .today(LocalDate.now())
                 .build();
 
-        attendance.confirmUser(userRepository.findByName(SecurityUtil.getLoginUserEmail())
+        User user = (userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN)));
 
-        attendance.addAttendanceGoWork();
+        if(attendance.getUser().getName().equals(user.getName())) {
+            throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
+        }
+
+        attendance.confirmUser(user);
+
+        attendance.addAttendanceDuty();
         attendanceRepository.save(attendance);
     }
 
     @Transactional(readOnly = true)
-    public AttendanceResponseDto getAttendance() {
+    public AttendanceResponseDto getUserAttendance() {
         User user = userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
 
@@ -58,7 +64,7 @@ public class AttendanceService {
     }
 
     @Transactional(readOnly = true)
-    public List<AttendanceAllResponseDto> getAttendanceDuty() {
+    public List<AttendanceAllResponseDto> getDutyUserAttendances() {
         return attendanceRepository.findAll().stream()
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))
@@ -67,7 +73,7 @@ public class AttendanceService {
     }
 
     @Transactional(readOnly = true)
-    public List<AttendanceAllResponseDto> getAttendanceNotDuty() {
+    public List<AttendanceAllResponseDto> getNotDutyUserAttendances() {
         return attendanceRepository.findAll().stream()
                 .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> !attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))

@@ -33,7 +33,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Attendance> attendances = new ArrayList<>();
 
-    private LocalTime essentialGoWorkTime;
+    private LocalTime dutyTime;
 
     @Builder
     public User(String name, String password) {
@@ -53,7 +53,7 @@ public class User {
         this.attendances.add(attendance);
     }
 
-    public void updateUser(String name) {
+    public void updateUserName(String name) {
         this.name = name;
     }
 
@@ -65,7 +65,7 @@ public class User {
         return passwordEncoder.matches(checkPassword, this.password);
     }
 
-    public void updateEssentialGoWorkTime(LocalTime essentialGoWorkTime) {
-        this.essentialGoWorkTime = essentialGoWorkTime;
+    public void settingDutyTime(LocalTime settingDutyTime) {
+        this.dutyTime = settingDutyTime;
     }
 }
