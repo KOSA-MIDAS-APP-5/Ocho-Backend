@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +31,10 @@ public class AttendanceService {
     private final UserRepository userRepository;
 
     public void createAttendance() {
-        Attendance attendance = Attendance.builder().startTime(LocalTime.now()).build();
+        Attendance attendance = Attendance.builder()
+                .startTime(LocalTime.now())
+                .today(LocalDate.now())
+                .build();
 
         attendance.confirmUser(userRepository.findByName(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN)));
@@ -45,6 +49,7 @@ public class AttendanceService {
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
 
         return attendanceRepository.findByUser(user)
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .map(attendance -> {
                     attendance.updateTimes(LocalTime.now());
                     return AttendanceResponseDto.builder().attendance(attendance).build();
@@ -55,6 +60,7 @@ public class AttendanceService {
     @Transactional(readOnly = true)
     public List<AttendanceAllResponseDto> getAttendanceDuty() {
         return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());
@@ -63,6 +69,7 @@ public class AttendanceService {
     @Transactional(readOnly = true)
     public List<AttendanceAllResponseDto> getAttendanceNotDuty() {
         return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> !attendance.getAttendanceStatus().equals(AttendanceStatus.DUTY))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());
@@ -73,6 +80,7 @@ public class AttendanceService {
                 .orElseThrow(() -> new UserException(UserExceptionType.REQUIRED_DO_LOGIN));
 
         return attendanceRepository.findByUser(user)
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .map(attendance -> {
                     attendance.addAttendanceLeaveWork();
                     attendance.updateTimes(LocalTime.now());

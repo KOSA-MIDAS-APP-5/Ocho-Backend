@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public List<AttendanceAllResponseDto> getAttendancesByWorkTime() {
         return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> attendance.getWorkTime().isBefore(attendance.getTodayTotalWorkTime()))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());
@@ -64,6 +66,7 @@ public class AdminService {
         }
 
         return attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
                 .filter(attendance -> user.getEssentialGoWorkTime().isBefore(attendance.getStartTime()))
                 .map(AttendanceAllResponseDto::new)
                 .collect(Collectors.toList());

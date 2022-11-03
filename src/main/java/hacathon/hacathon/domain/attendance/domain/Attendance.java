@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -33,9 +34,12 @@ public class Attendance {
 
     private LocalTime remainingTime;
 
+    private LocalDate today;
+
     @Builder
-    public Attendance(LocalTime startTime) {
+    public Attendance(LocalTime startTime, LocalDate today) {
         this.startTime = startTime;
+        this.today = today;
     }
 
     public void addAttendanceGoWork() {
