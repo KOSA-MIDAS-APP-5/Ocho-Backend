@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum MapPointExceptionType implements BaseExceptionType {
 
-    ALREADY_CREATE_MAP_POINT(800, HttpStatus.BAD_REQUEST, "좌표를 이미 등록했습니다.");
+    ALREADY_CREATE_MAP_POINT(800, HttpStatus.BAD_REQUEST, "좌표를 이미 등록했습니다."),
+    NOT_EXISTS_MAP_POINT(801, HttpStatus.BAD_REQUEST, "좌표가 존재하지 않습니다.");
 
     private final int errorCode;
     private final HttpStatus httpStatus;
