@@ -24,12 +24,12 @@ public class AdminApiController {
         adminService.updateUserName(id, requestDto);
     }
 
-    @GetMapping("/night-shift")
+    @GetMapping("/overtime-users")
     public List<AttendanceAllResponseDto> getOvertimeUsers() {
         return adminService.getOvertimeUsers();
     }
 
-    @PutMapping("/go-work-time")
+    @PutMapping("/setting/duty-time")
     public void settingDutyTime(@RequestBody AdminSettingDutyTimeRequestDto requestDto) {
         adminService.settingDutyTime(requestDto);
     }

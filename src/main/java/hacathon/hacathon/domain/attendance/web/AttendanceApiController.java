@@ -26,12 +26,12 @@ public class AttendanceApiController {
         return attendanceService.getUserAttendance();
     }
 
-    @GetMapping("/go-work")
+    @GetMapping("/duty")
     public List<AttendanceAllResponseDto> getDutyUserAttendances() {
         return attendanceService.getDutyUserAttendances();
     }
 
-    @GetMapping("/not/go-work")
+    @GetMapping("/not/duty")
     public List<AttendanceAllResponseDto> getNotDutyUserAttendances() {
         return attendanceService.getNotDutyUserAttendances();
     }
