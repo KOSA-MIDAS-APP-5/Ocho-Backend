@@ -1,6 +1,7 @@
 package hacathon.hacathon.domain.attendance.service;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
+import hacathon.hacathon.domain.attendance.domain.AttendanceQuerydslRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
@@ -18,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -29,14 +29,14 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final AttendanceValidator attendanceValidator;
+    private final AttendanceQuerydslRepository attendanceQuerydslRepository;
 
     public void createAttendance() {
         User user = attendanceValidator.validateUser();
 
-        Optional<Attendance> findAttendance = attendanceRepository.findByUser(user);
-
-        if(findAttendance.isPresent() && findAttendance.get().getToday().equals(LocalDate.now())) {
+        if(attendanceQuerydslRepository.getAttendanceByUser(user).isPresent()) {
             throw new AttendanceException(AttendanceExceptionType.ALREADY_DUTY);
+
         }
 
         Attendance attendance = Attendance.builder()
@@ -54,8 +54,7 @@ public class AttendanceService {
     public AttendanceResponseDto getUserAttendance() {
         User user = attendanceValidator.validateUser();
 
-        return attendanceRepository.findByUser(user)
-                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
+        return attendanceQuerydslRepository.getAttendanceByUser(user)
                 .map(attendance -> {
                     attendance.updateTimes(LocalTime.now());
                     return AttendanceResponseDto.builder().attendance(attendance).build();
@@ -84,8 +83,7 @@ public class AttendanceService {
     public AttendanceResponseDto updateAttendanceStatus() {
         User user = attendanceValidator.validateUser();
 
-        return attendanceRepository.findByUser(user)
-                .filter(attendance -> attendance.getToday().compareTo(LocalDate.now()) == 0)
+        return attendanceQuerydslRepository.getAttendanceByUser(user)
                 .map(attendance -> {
                     attendance.addAttendanceLeaveWork();
                     attendance.updateTimes(LocalTime.now());

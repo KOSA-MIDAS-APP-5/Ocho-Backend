@@ -1,6 +1,7 @@
 package hacathon.hacathon.domain.attendance.validate;
 
 import hacathon.hacathon.domain.attendance.domain.Attendance;
+import hacathon.hacathon.domain.attendance.domain.AttendanceQuerydslRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceRepository;
 import hacathon.hacathon.domain.attendance.domain.AttendanceStatus;
 import hacathon.hacathon.domain.attendance.exception.AttendanceException;
@@ -16,14 +17,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class AttendanceValidator {
-
-    private final AttendanceRepository attendanceRepository;
+    private final AttendanceQuerydslRepository attendanceQuerydslRepository;
     private final UserRepository userRepository;
 
     public Attendance validateUserAndAttendance() {
         User user = validateUser();
 
-        return attendanceRepository.findByUser(user)
+        return attendanceQuerydslRepository.getAttendanceByUser(user)
                 .orElseThrow(() -> new AttendanceException(AttendanceExceptionType.NOT_START_ATTENDANCE_YET));
     }
 
