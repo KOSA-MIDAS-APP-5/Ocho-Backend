@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final UserRepository userRepository;
-    private final AttendanceRepository attendanceRepository;
     private final MapPointRepository mapPointRepository;
     private final AttendanceQuerydslRepository attendanceQuerydslRepository;
 
